@@ -21,7 +21,7 @@ db.init_app(app)
 def home():
     return 'test'
 
-@app.route("/heros")
+@app.route("/heroes")
 def heros():
     # Query all heroes from the database
     all_heros = Hero.query.all()
@@ -33,7 +33,7 @@ def heros():
     return heros_list
 
 
-@app.route('/heros/<int:id>')
+@app.route('/heroes/<int:id>')
 def get_id(id):
     """Get a specific hero by their ID"""
     hero = Hero.query.filter(Hero.id == id).first()
@@ -47,7 +47,7 @@ def get_id(id):
             "ID": hero.id,
             "Name": hero.name,
             "Super Name": hero.super_name,
-            "powers": powers  # Use powers directly without jsonify
+            "powers":[ powers]  # Use powers directly without jsonify
         }
 
         return jsonify(res)
@@ -106,55 +106,8 @@ def get_powers(id):
     else:
         # Default response for unsupported HTTP methods
         return jsonify({"error": "Unsupported HTTP method"}), 405
-    if request.method == "GET":
-        # Retrieve power data based on the given ID
-        power = Power.query.filter(Power.id == id).first()
-
-        if power:
-            # Return power details if found
-            return jsonify({
-                "id": power.id,
-                "name": power.name,
-                "description": power.description
-            }), 200
-        else:
-            # Return an error message if power not found
-            return jsonify({"error": "Power not found"}), 404
-
-    elif request.method == "POST":
-        # Assuming you want to update the power with new data
-        new_data = request.json
-
-        # Get the existing power from the database
-        existing_power = Power.query.filter(Power.id == id).first()
-
-        if existing_power:
-            # Update the existing power with new data
-            existing_power.name = new_data.get('name', existing_power.name)
-            existing_power.description = new_data.get('description', existing_power.description)
-
-            # Commit the changes to the database
-            db.session.commit()
-
-            return jsonify({
-                "message": "Power updated successfully",
-                "id": existing_power.id,
-                "name": existing_power.name,
-                "description": existing_power.description
-            }), 200
-        else:
-            # Return an error message if power not found
-            return jsonify({"error": "Power not found"}), 404
-
-    elif request.method == "PATCH":
-        # Handle the PATCH method (add your logic here)
-        return jsonify({"message": "PATCH request handled"}), 200
-
-    else:
-        # Default response for unsupported HTTP methods
-        return jsonify({"error": "Unsupported HTTP method"}), 405
-
-
+    
+    
 
 
 @app.route('/hero_powers', methods=["POST"])
@@ -193,4 +146,4 @@ def add_hero_power():
         
 
 if __name__ == '__main__':
-    app.run(port=5555, debug=True)
+    app.run(port=3000, debug=True)
