@@ -56,6 +56,14 @@ def get_id(id):
         return {"error": "Hero not found"}
 
 
+@app.route('/powers')
+def get_all_powers():
+    """Get all unique powers from the database"""
+    power=Power.query.all()
+    power_list = [{"id": power.id, "name": power.name, "description": power.description} for power in power]
+
+    return power_list
+
 @app.route('/powers/<int:id>', methods=["GET", "POST", "PATCH"])
 def get_powers(id):
     if request.method == "GET":
